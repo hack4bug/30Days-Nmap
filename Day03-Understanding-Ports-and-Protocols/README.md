@@ -413,7 +413,7 @@ Result: External users access internal development server
 
 ---
 
-## 💡 Pro Tips for Beginners
+## Pro Tips for Beginners
 
 1. **Start with Common Ports**: Focus on ports 1-1024 first
 2. **Use Nmap's Service Detection**: `-sV` flag gives detailed service info
@@ -434,6 +434,8 @@ Result: External users access internal development server
 - [Port Quiz Game](https://www.portquiz.net/)
 - [Interactive Protocol Tutorials](https://www.cloudflare.com/learning/)
 - [Wireshark for Protocol Analysis](https://www.wireshark.org/)
+
+
 
 ---
 

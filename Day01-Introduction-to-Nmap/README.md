@@ -2225,7 +2225,7 @@ Responsible disclosure is about balancing the need to fix vulnerabilities with t
 - Prepare detailed advisory
 - Credit all involved parties
 - Provide mitigation guidance
-
+ 
 **Disclosure Timeline Example:**
 ```powershell
 Day 0: Vulnerability discovered

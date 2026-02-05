@@ -449,6 +449,8 @@ nmap --script=http-title scanme.nmap.org -p 80
 # ✓ NSE scripts executing properly
 ```
 
+
+
 ---
 
 ## Troubleshooting Common Issues
