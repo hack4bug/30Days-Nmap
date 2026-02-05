@@ -2007,8 +2007,7 @@ Without proper authorization, even well-intentioned scanning becomes illegal act
    - **Time Windows**: When scanning is permitted
 
 3. **Authorization Documentation**
-   """
-   myterminal
+   ```cmd 
    Sample Authorization Document Components:
    1. Date and time of authorization
    2. Authorizing party contact information
@@ -2018,7 +2017,7 @@ Without proper authorization, even well-intentioned scanning becomes illegal act
    6. Emergency contact procedures
    7. Legal jurisdiction and governing law
    8. Confidentiality agreements
-   """
+   ```
 
 **Obtaining Proper Authorization:**
 
@@ -2198,7 +2197,7 @@ Physical Isolation:
 #### **Responsible Disclosure**
 
 **The Disclosure Process:**
-Responsible disclosure is about balancing the need to fix vulnerabilities with the need to protect users while avoiding helping attackers.
+Responsible disclosure is about balancing the need to fix vulnerabilities with the need to protect users while avoiding helping attackers. <br>
 
 **Disclosure Timeline Framework:**
 
