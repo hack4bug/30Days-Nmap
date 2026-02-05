@@ -2195,6 +2195,7 @@ Physical Isolation:
 - Documentation platforms
 
 #### **Responsible Disclosure**
+<br>
 
 **The Disclosure Process:**
 Responsible disclosure is about balancing the need to fix vulnerabilities with the need to protect users while avoiding helping attackers. <br>
