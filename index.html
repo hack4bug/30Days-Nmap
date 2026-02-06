@@ -1,0 +1,1577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>30 Days of Nmap | Hack4Bug</title>
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/233085547?v=4" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79b8ff;
+            --border: #30363d;
+            --success: #3fb950;
+            --warning: #d29922;
+            --danger: #f85149;
+            --info: #1f6feb;
+            --terminal-green: #4ec9b0;
+            --terminal-yellow: #dcdcaa;
+            --terminal-red: #f48771;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .nav-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+        }
+
+        .nav-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-left: auto;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 24px;
+            min-height: calc(100vh - 65px);
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                max-height: 400px;
+            }
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            height: fit-content;
+            position: sticky;
+            top: 89px;
+            max-height: calc(100vh - 113px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            background-color: var(--bg-tertiary);
+        }
+
+        .sidebar-header h2 {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-content {
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .day-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            border-bottom: 1px solid var(--border);
+            gap: 12px;
+        }
+
+        .day-item:hover {
+            background-color: var(--bg-tertiary);
+        }
+
+        .day-item.active {
+            background-color: var(--bg-tertiary);
+            border-left: 3px solid var(--accent);
+        }
+
+        .day-number {
+            background-color: var(--accent);
+            color: var(--bg-primary);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 4px;
+            min-width: 45px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .day-title {
+            font-size: 0.875rem;
+            color: var(--text-primary);
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .file-badge {
+            font-size: 0.625rem;
+            background-color: var(--bg-primary);
+            color: var(--text-secondary);
+            padding: 2px 6px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        /* Main Content */
+        .main-content {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            background-color: var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .content-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .file-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .file-tab {
+            padding: 6px 12px;
+            font-size: 0.8125rem;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            white-space: nowrap;
+        }
+
+        .file-tab:hover {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .file-tab.active {
+            background-color: var(--accent);
+            color: var(--bg-primary);
+            border-color: var(--accent);
+        }
+
+        .content-body {
+            padding: 32px;
+            overflow-x: auto;
+            flex: 1;
+        }
+
+        /* Enhanced Markdown Styles */
+        .markdown-body {
+            color: var(--text-primary);
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .markdown-body h1 {
+            font-size: 2.5rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0.8rem;
+            margin: 2rem 0 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .markdown-body h2 {
+            font-size: 2rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.6rem;
+            margin: 2.5rem 0 1.2rem;
+            color: var(--text-primary);
+        }
+
+        .markdown-body h3 {
+            font-size: 1.5rem;
+            margin: 2rem 0 1rem;
+            color: var(--text-primary);
+        }
+
+        .markdown-body h4 {
+            font-size: 1.25rem;
+            margin: 1.5rem 0 0.8rem;
+            color: var(--text-primary);
+        }
+
+        .markdown-body h5 {
+            font-size: 1.1rem;
+            margin: 1.2rem 0 0.6rem;
+            color: var(--text-secondary);
+        }
+
+        .markdown-body h6 {
+            font-size: 1rem;
+            margin: 1rem 0 0.5rem;
+            color: var(--text-secondary);
+            font-weight: normal;
+        }
+
+        .markdown-body p {
+            margin: 1.2rem 0;
+            color: var(--text-secondary);
+        }
+
+        .markdown-body strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .markdown-body em {
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .markdown-body ul, .markdown-body ol {
+            margin: 1.2rem 0;
+            padding-left: 2.5rem;
+        }
+
+        .markdown-body li {
+            margin: 0.6rem 0;
+            color: var(--text-secondary);
+        }
+
+        .markdown-body li > p {
+            margin: 0.5rem 0;
+        }
+
+        .markdown-body code:not(pre code) {
+            background-color: var(--bg-tertiary);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.9em;
+            color: var(--accent);
+        }
+
+        .markdown-body pre {
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .markdown-body pre code {
+            display: block;
+            padding: 1.5rem;
+            background: transparent;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            overflow-x: auto;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background-color: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border);
+            border-radius: 8px 8px 0 0;
+        }
+
+        .code-language {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-family: 'SFMono-Regular', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .copy-button {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .copy-button:hover {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .copy-button.copied {
+            background-color: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .markdown-body blockquote {
+            border-left: 4px solid var(--accent);
+            padding: 0.8rem 1.2rem;
+            margin: 1.5rem 0;
+            background-color: var(--bg-tertiary);
+            border-radius: 0 8px 8px 0;
+            color: var(--text-secondary);
+        }
+
+        .markdown-body blockquote p {
+            margin: 0.5rem 0;
+        }
+
+        .markdown-body a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: color 0.15s ease;
+        }
+
+        .markdown-body a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+
+        .markdown-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .markdown-body th {
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-weight: 600;
+            padding: 12px 16px;
+            border-bottom: 2px solid var(--border);
+            text-align: left;
+        }
+
+        .markdown-body td {
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        .markdown-body tr:nth-child(even) {
+            background-color: rgba(33, 38, 45, 0.3);
+        }
+
+        .markdown-body tr:hover {
+            background-color: var(--bg-tertiary);
+        }
+
+        .markdown-body img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+
+        .markdown-body hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2.5rem 0;
+        }
+
+        /* Task lists */
+        .markdown-body .task-list-item {
+            list-style-type: none;
+            margin-left: -1.5rem;
+        }
+
+        .markdown-body .task-list-item input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+
+        /* Special styling for terminal outputs */
+        .terminal-output {
+            background-color: #000 !important;
+            color: var(--terminal-green) !important;
+        }
+
+        .terminal-output .hljs-meta,
+        .terminal-output .hljs-string {
+            color: var(--terminal-green) !important;
+        }
+
+        .terminal-output .hljs-built_in,
+        .terminal-output .hljs-keyword {
+            color: var(--terminal-yellow) !important;
+        }
+
+        .terminal-output .hljs-number,
+        .terminal-output .hljs-literal {
+            color: var(--terminal-red) !important;
+        }
+
+        /* Command prompt styling */
+        .command-prompt {
+            color: var(--terminal-green);
+            font-weight: bold;
+        }
+
+        .command-output {
+            color: var(--text-secondary);
+        }
+
+        /* Nmap output specific styling */
+        .nmap-header {
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .nmap-host-up {
+            color: var(--success);
+        }
+
+        .nmap-port-open {
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        .nmap-port-closed {
+            color: var(--text-secondary);
+        }
+
+        .nmap-scan-summary {
+            color: var(--accent);
+            font-style: italic;
+        }
+
+        /* Exercise/Example boxes */
+        .exercise-box {
+            background-color: var(--bg-tertiary);
+            border-left: 4px solid var(--accent);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .exercise-box h4 {
+            color: var(--accent);
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+        }
+
+        .example-box {
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+
+        .example-box h5 {
+            color: var(--text-secondary);
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid transparent;
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Error State */
+        .error {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-secondary);
+        }
+
+        .error-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+
+        /* Welcome Screen */
+        .welcome {
+            text-align: center;
+            padding: 80px 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .welcome-icon {
+            font-size: 5rem;
+            margin-bottom: 32px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+
+        .welcome h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        .welcome p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 24px;
+        }
+
+        /* Progress Bar */
+        .progress-section {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            background-color: var(--bg-secondary);
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background-color: var(--bg-primary);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--success));
+            border-radius: 3px;
+            transition: width 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background-image: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.2) 50%,
+                transparent 100%
+            );
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 24px;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            border-top: 1px solid var(--border);
+            background-color: var(--bg-secondary);
+        }
+
+        .footer a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: color 0.15s ease;
+        }
+
+        .footer a:hover {
+            color: var(--accent-hover);
+            text-decoration: underline;
+        }
+
+        /* Search */
+        .search-box {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 12px 10px 40px;
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            outline: none;
+            transition: all 0.15s ease;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 28px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            pointer-events: none;
+        }
+
+        /* No Results */
+        .no-results {
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+                gap: 16px;
+            }
+            
+            .content-body {
+                padding: 20px;
+            }
+            
+            .markdown-body {
+                font-size: 15px;
+            }
+            
+            .markdown-body h1 {
+                font-size: 2rem;
+            }
+            
+            .markdown-body h2 {
+                font-size: 1.75rem;
+            }
+            
+            .markdown-body pre code {
+                font-size: 0.85rem;
+                padding: 1rem;
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            .navbar, .sidebar, .footer, .file-tabs, .copy-button {
+                display: none !important;
+            }
+            
+            .container {
+                grid-template-columns: 1fr;
+                padding: 0;
+            }
+            
+            .main-content {
+                border: none;
+                border-radius: 0;
+            }
+            
+            .content-body {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="#" class="nav-brand">
+            <img src="https://avatars.githubusercontent.com/u/233085547?v=4" alt="Hack4Bug Logo" class="nav-logo">
+            <span class="nav-title">Hack4Bug</span>
+        </a>
+        <span class="nav-subtitle">30 Days of Learning Nmap</span>
+    </nav>
+
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>📚 Course Content</h2>
+            </div>
+            <div class="search-box">
+                <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" class="search-input" id="searchInput" placeholder="Search days...">
+            </div>
+            <div class="progress-section">
+                <div class="progress-text">
+                    <span>Progress</span>
+                    <span id="progressText">0/30 Days</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="sidebar-content" id="daysList">
+                <!-- Days will be populated here -->
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="content-header" id="contentHeader">
+                <h1 class="content-title" id="contentTitle">Welcome</h1>
+                <div class="file-tabs" id="fileTabs">
+                    <!-- File tabs will be populated here -->
+                </div>
+            </div>
+            <div class="content-body" id="contentBody">
+                <div class="welcome">
+                    <div class="welcome-icon">🎯</div>
+                    <h2>Welcome to 30 Days of Nmap</h2>
+                    <p>Master network scanning with Nmap through this comprehensive 30-day learning journey. Select a day from the sidebar to get started!</p>
+                    <p>This course covers everything from basic port scanning to advanced evasion techniques and real-world reconnaissance workflows.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer">
+        <p>Made with ❤️ by <a href="https://github.com/Hack4Bug" target="_blank" rel="noopener noreferrer">Hack4Bug</a> | 30 Days of Learning Nmap</p>
+        <p style="margin-top: 8px; font-size: 0.8rem; color: var(--text-secondary);">
+            All content is for educational purposes only. Always obtain proper authorization before scanning networks.
+        </p>
+    </footer>
+
+    <script>
+        // Folder structure with files
+        const folderStructure = {
+            "Day01-Introduction-to-Nmap": {
+                "README.md": "README.md"
+            },
+            "Day02-Nmap-Installation-and-Setup": {
+                "README.md": "README.md"
+            },
+            "Day03-Understanding-Ports-and-Protocols": {
+                "README.md": "README.md"
+            },
+            "Day04-Basic-Host-Discovery": {
+                "README.md": "README.md"
+            },
+            "Day05-Basic-Port-Scanning": {
+                "README.md": "README.md"
+            },
+            "Day06-Scan-Techniques-TCP-SYN-Connect": {
+                "README.md": "README.md"
+            },
+            "Day07-UDP-Scanning": {
+                "README.md": "README.md"
+            },
+            "Day08-Service-Version-Detection": {
+                "README.md": "README.md"
+            },
+            "Day09-OS-Fingerprinting": {
+                "README.md": "README.md"
+            },
+            "Day10-Timing-and-Performance-Options": {
+                "README.md": "README.md"
+            },
+            "Day11-Nmap-Scripting-Engine-Basics": {
+                "README.md": "README.md"
+            },
+            "Day12-Using-NSE-Discovery-Scripts": {
+                "README.md": "README.md"
+            },
+            "Day13-Using-NSE-Vulnerability-Scripts": {
+                "README.md": "README.md"
+            },
+            "Day14-Brute-Force-and-Auth-Scripts": {
+                "README.md": "README.md"
+            },
+            "Day15-Custom-NSE-Scripts-Overview": {
+                "README.md": "README.md"
+            },
+            "Day16-Output-Formats-and-Reporting": {
+                "README.md": "README.md"
+            },
+            "Day17-Grepable-and-XML-Parsing": {
+                "README.md": "README.md"
+            },
+            "Day18-Nmap-Automation-with-Shell-Scripts": {
+                "README.md": "README.md"
+            },
+            "Day19-Scanning-Multiple-Targets-and-Ranges": {
+                "README.md": "README.md"
+            },
+            "Day20-Stealth-and-Evasion-Techniques": {
+                "README.md": "README.md"
+            },
+            "Day21-Firewall-and-IDS-Evasion": {
+                "README.md": "README.md"
+            },
+            "Day22-Spoofing-and-Decoy-Scanning": {
+                "README.md": "README.md"
+            },
+            "Day23-Fragmentation-and-Packet-Manipulation": {
+                "README.md": "README.md"
+            },
+            "Day24-Scanning-Web-Servers-with-Nmap": {
+                "README.md": "README.md"
+            },
+            "Day25-Database-and-SMB-Enumeration": {
+                "README.md": "README.md"
+            },
+            "Day26-Cloud-and-External-Perimeter-Scanning": {
+                "README.md": "README.md"
+            },
+            "Day27-Internal-Network-Enumeration": {
+                "README.md": "README.md"
+            },
+            "Day28-Real-World-Recon-Methodology": {
+                "README.md": "README.md"
+            },
+            "Day29-Building-Full-Nmap-Recon-Workflow": {
+                "README.md": "README.md"
+            },
+            "Day30-Final-Practical-Challenge": {
+                "README.md": "README.md"
+            }
+        };
+
+        // State
+        let currentDay = null;
+        let currentFile = null;
+        let viewedDays = JSON.parse(localStorage.getItem('viewedDays') || '[]');
+
+        // GitHub raw content base URL
+        const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/Hack4Bug/30Days-Nmap/main';
+
+        // Language mappings for syntax highlighting
+        const languageMap = {
+            'powershell': 'powershell',
+            'ps1': 'powershell',
+            'ps': 'powershell',
+            'bash': 'bash',
+            'sh': 'bash',
+            'shell': 'bash',
+            'zsh': 'bash',
+            'terminal': 'bash',
+            'cmd': 'powershell',
+            'console': 'bash',
+            'command': 'bash',
+            'python': 'python',
+            'py': 'python',
+            'javascript': 'javascript',
+            'js': 'javascript',
+            'html': 'xml',
+            'css': 'css',
+            'json': 'json',
+            'xml': 'xml',
+            'yaml': 'yaml',
+            'yml': 'yaml',
+            'ini': 'ini',
+            'toml': 'ini',
+            'sql': 'sql',
+            'c': 'c',
+            'cpp': 'cpp',
+            'java': 'java',
+            'go': 'go',
+            'rust': 'rust',
+            'php': 'php',
+            'ruby': 'ruby',
+            'perl': 'perl',
+            'nmap': 'bash',
+            'plaintext': 'plaintext',
+            'text': 'plaintext',
+            'output': 'plaintext',
+            '': 'plaintext'
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderDaysList();
+            updateProgress();
+            setupSearch();
+            setupCopyButtons();
+        });
+
+        // Render days list
+        function renderDaysList(filter = '') {
+            const daysList = document.getElementById('daysList');
+            const days = Object.keys(folderStructure);
+            
+            // Filter days
+            const filteredDays = days.filter(folder => {
+                if (!filter) return true;
+                const dayMatch = folder.match(/Day(\d+)/);
+                const dayNum = dayMatch ? parseInt(dayMatch[1]) : 0;
+                const title = folder.replace(/Day\d+-/, '').replace(/-/g, ' ');
+                
+                return folder.toLowerCase().includes(filter.toLowerCase()) || 
+                       title.toLowerCase().includes(filter.toLowerCase()) ||
+                       dayNum.toString().includes(filter);
+            });
+
+            if (filteredDays.length === 0 && filter) {
+                daysList.innerHTML = `
+                    <div class="no-results">
+                        <p>No days found for "${filter}"</p>
+                        <p style="font-size: 0.8rem; margin-top: 8px;">Try a different search term</p>
+                    </div>
+                `;
+                return;
+            }
+
+            daysList.innerHTML = '';
+
+            filteredDays.forEach(folder => {
+                const dayMatch = folder.match(/Day(\d+)/);
+                const dayNum = dayMatch ? parseInt(dayMatch[1]) : 0;
+                const title = folder.replace(/Day\d+-/, '').replace(/-/g, ' ');
+                const files = Object.keys(folderStructure[folder]);
+                const fileCount = files.length;
+                const isViewed = viewedDays.includes(folder);
+                const isActive = currentDay === folder;
+
+                const dayItem = document.createElement('div');
+                dayItem.className = `day-item${isActive ? ' active' : ''}`;
+                dayItem.innerHTML = `
+                    <span class="day-number" style="${isViewed ? 'background-color: var(--success);' : ''}">
+                        Day ${dayNum}
+                    </span>
+                    <span class="day-title" style="${isViewed ? 'color: var(--success);' : ''}">
+                        ${title}
+                    </span>
+                    ${fileCount > 1 ? `<span class="file-badge">${fileCount} files</span>` : ''}
+                    ${isViewed ? '<span style="color: var(--success); font-size: 0.75rem;">✓</span>' : ''}
+                `;
+                dayItem.onclick = () => selectDay(folder);
+                daysList.appendChild(dayItem);
+            });
+        }
+
+        // Select a day
+        function selectDay(folder) {
+            currentDay = folder;
+            const files = Object.keys(folderStructure[folder]);
+            currentFile = files[0];
+
+            // Mark as viewed
+            if (!viewedDays.includes(folder)) {
+                viewedDays.push(folder);
+                localStorage.setItem('viewedDays', JSON.stringify(viewedDays));
+                updateProgress();
+            }
+
+            renderDaysList(document.getElementById('searchInput').value);
+            renderFileTabs(folder);
+            loadContent(folder, currentFile);
+            
+            // Scroll to top of content
+            document.querySelector('.content-body').scrollTop = 0;
+        }
+
+        // Render file tabs
+        function renderFileTabs(folder) {
+            const fileTabs = document.getElementById('fileTabs');
+            const files = Object.keys(folderStructure[folder]);
+
+            if (files.length <= 1) {
+                fileTabs.innerHTML = '';
+                return;
+            }
+
+            fileTabs.innerHTML = files.map(file => {
+                const fileName = file.replace('.md', '');
+                const isActive = currentFile === file;
+                return `
+                    <button class="file-tab${isActive ? ' active' : ''}" 
+                            onclick="selectFile('${folder}', '${file}')"
+                            title="${file}">
+                        ${fileName}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        // Select a file
+        function selectFile(folder, file) {
+            currentFile = file;
+            renderFileTabs(folder);
+            loadContent(folder, file);
+        }
+
+        // Load content from GitHub
+        async function loadContent(folder, file) {
+            const contentTitle = document.getElementById('contentTitle');
+            const contentBody = document.getElementById('contentBody');
+
+            const dayMatch = folder.match(/Day(\d+)/);
+            const dayNum = dayMatch ? parseInt(dayMatch[1]) : 0;
+            const title = folder.replace(/Day\d+-/, '').replace(/-/g, ' ');
+
+            contentTitle.textContent = `Day ${dayNum}: ${title}`;
+
+            // Show loading
+            contentBody.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading content...</p>
+                </div>
+            `;
+
+            try {
+                const url = `${GITHUB_RAW_BASE}/${folder}/${file}`;
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const markdown = await response.text();
+                const html = await parseMarkdown(markdown);
+                contentBody.innerHTML = `<div class="markdown-body">${html}</div>`;
+                
+                // Initialize syntax highlighting
+                hljs.highlightAll();
+                
+                // Setup copy buttons
+                setupCopyButtons();
+                
+                // Apply special styling to terminal outputs
+                applyTerminalStyling();
+            } catch (error) {
+                console.error('Error loading content:', error);
+                contentBody.innerHTML = `
+                    <div class="error">
+                        <div class="error-icon">⚠️</div>
+                        <h3>Unable to load content</h3>
+                        <p>Please check if the repository exists and the file path is correct.</p>
+                        <p style="margin-top: 12px; font-size: 0.8rem;">
+                            Expected path: ${GITHUB_RAW_BASE}/${folder}/${file}
+                        </p>
+                        <p style="margin-top: 8px; font-size: 0.8rem; color: var(--danger);">
+                            Error: ${error.message}
+                        </p>
+                    </div>
+                `;
+            }
+        }
+
+        // Helper function to detect language from content
+        function detectLanguageFromContent(lang, content) {
+            const contentLower = content.toLowerCase().trim();
+            
+            // If language is explicitly provided
+            if (lang && lang.trim()) {
+                const langLower = lang.toLowerCase();
+                if (languageMap[langLower]) {
+                    return langLower;
+                }
+            }
+            
+            // Auto-detect from content
+            if (contentLower.includes('powershell') || 
+                contentLower.includes('ps>') ||
+                contentLower.includes('get-') ||
+                contentLower.includes('write-host') ||
+                contentLower.includes('import-module') ||
+                contentLower.includes('$env:')) {
+                return 'powershell';
+            }
+            
+            if (contentLower.includes('bash') || 
+                contentLower.includes('$ ') ||
+                contentLower.includes('#!/bin/') ||
+                contentLower.includes('#!/usr/bin/') ||
+                contentLower.includes('sudo ') ||
+                contentLower.includes('apt-get') ||
+                contentLower.includes('yum install') ||
+                contentLower.includes('┌──') ||
+                contentLower.includes('└─$')) {
+                return 'bash';
+            }
+            
+            if (contentLower.includes('cmd') || 
+                contentLower.includes('c:\\') ||
+                contentLower.includes('>nmap') ||
+                contentLower.includes('dir ') ||
+                contentLower.includes('copy ') ||
+                contentLower.includes('del ')) {
+                return 'cmd';
+            }
+            
+            if (contentLower.includes('nmap ') ||
+                contentLower.includes('scanning for') ||
+                contentLower.includes('port state') ||
+                contentLower.includes('nmap done')) {
+                return 'plaintext'; // Nmap output
+            }
+            
+            if (contentLower.includes('python') ||
+                contentLower.includes('import ') ||
+                contentLower.includes('def ') ||
+                contentLower.includes('class ') ||
+                contentLower.includes('print(')) {
+                return 'python';
+            }
+            
+            return 'plaintext';
+        }
+
+        // Enhanced Markdown parser that handles all edge cases
+        async function parseMarkdown(markdown) {
+            let html = markdown;
+            const codeBlocks = [];
+            let codeBlockId = 0;
+            
+            // First pass: Handle complex code blocks with mixed formats
+            // This regex handles: ```language optional-text\ncontent```
+            const codeBlockRegex = /```(\w*)(?:[^\n]*)?\n([\s\S]*?)```/g;
+            
+            html = html.replace(codeBlockRegex, (match, lang, content) => {
+                codeBlockId++;
+                const id = `code-${Date.now()}-${codeBlockId}`;
+                
+                // Clean and detect language
+                const cleanLang = lang.toLowerCase().trim();
+                const detectedLang = detectLanguageFromContent(cleanLang, content);
+                const displayLang = detectedLang || 'plaintext';
+                const highlightedLang = languageMap[detectedLang] || 'plaintext';
+                
+                // Clean up the content
+                let cleanContent = content.trim();
+                
+                // Remove trailing "plaintext" markers
+                if (cleanContent.endsWith('plaintext')) {
+                    cleanContent = cleanContent.substring(0, cleanContent.length - 9).trim();
+                }
+                
+                codeBlocks.push({
+                    id,
+                    language: displayLang,
+                    highlightedLang,
+                    content: cleanContent
+                });
+                
+                return `\n{{CODE_BLOCK:${id}}}\n`;
+            });
+            
+            // Handle inline code
+            html = html.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+            
+            // Handle headers
+            html = html.replace(/^# (.*$)/gm, '<h1>$1</h1>');
+            html = html.replace(/^## (.*$)/gm, '<h2>$1</h2>');
+            html = html.replace(/^### (.*$)/gm, '<h3>$1</h3>');
+            html = html.replace(/^#### (.*$)/gm, '<h4>$1</h4>');
+            html = html.replace(/^##### (.*$)/gm, '<h5>$1</h5>');
+            html = html.replace(/^###### (.*$)/gm, '<h6>$1</h6>');
+            
+            // Handle bold and italic
+            html = html.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>');
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            
+            // Handle strikethrough
+            html = html.replace(/~~(.*?)~~/g, '<del>$1</del>');
+            
+            // Handle links
+            html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+            
+            // Handle images
+            html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
+            
+            // Handle blockquotes
+            html = html.replace(/^>\s?(.*)$/gm, '<blockquote>$1</blockquote>');
+            
+            // Handle horizontal rules
+            html = html.replace(/^---$/gm, '<hr>');
+            html = html.replace(/^\*\*\*$/gm, '<hr>');
+            html = html.replace(/^___$/gm, '<hr>');
+            
+            // Handle unordered lists
+            const lines = html.split('\n');
+            let inList = false;
+            let listType = null;
+            let listItems = [];
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                const ulMatch = line.match(/^[\t ]*[-*+]\s+(.*)$/);
+                const olMatch = line.match(/^[\t ]*(\d+)\.\s+(.*)$/);
+                
+                if (ulMatch) {
+                    if (!inList || listType !== 'ul') {
+                        if (inList) {
+                            lines[i-1] += '</' + listType + '>';
+                        }
+                        inList = true;
+                        listType = 'ul';
+                        listItems = [];
+                    }
+                    listItems.push(`<li>${ulMatch[1]}</li>`);
+                    lines[i] = '';
+                } else if (olMatch) {
+                    if (!inList || listType !== 'ol') {
+                        if (inList) {
+                            lines[i-1] += '</' + listType + '>';
+                        }
+                        inList = true;
+                        listType = 'ol';
+                        listItems = [];
+                    }
+                    listItems.push(`<li>${olMatch[2]}</li>`);
+                    lines[i] = '';
+                } else {
+                    if (inList && listItems.length > 0) {
+                        lines[i-1] = `<${listType}>${listItems.join('')}</${listType}>`;
+                        inList = false;
+                        listType = null;
+                        listItems = [];
+                    }
+                }
+            }
+            
+            // Close any open list
+            if (inList && listItems.length > 0) {
+                const lastIndex = lines.length - 1;
+                lines[lastIndex] = `<${listType}>${listItems.join('')}</${listType}>`;
+            }
+            
+            html = lines.join('\n');
+            
+            // Handle tables
+            html = html.replace(/\|(.+)\|\n\|([-:| ]+)\|\n((?:\|.+\|\n?)+)/g, (match, header, align, rows) => {
+                const headers = header.split('|')
+                    .filter(h => h.trim())
+                    .map(h => `<th>${h.trim()}</th>`)
+                    .join('');
+                
+                const rowLines = rows.trim().split('\n');
+                const bodyRows = rowLines.map(row => {
+                    const cells = row.split('|')
+                        .filter(c => c.trim())
+                        .map(c => `<td>${c.trim()}</td>`)
+                        .join('');
+                    return `<tr>${cells}</tr>`;
+                }).join('');
+                
+                return `<table><thead><tr>${headers}</tr></thead><tbody>${bodyRows}</tbody></table>`;
+            });
+            
+            // Handle paragraphs
+            const paragraphs = html.split(/\n\n+/);
+            html = paragraphs.map(block => {
+                block = block.trim();
+                if (!block) return '';
+                
+                // Skip if already HTML tagged
+                if (block.startsWith('<') || 
+                    block.startsWith('{{CODE_BLOCK:') ||
+                    block.match(/^<(h[1-6]|p|ul|ol|li|table|blockquote|hr|pre|code)/)) {
+                    return block;
+                }
+                
+                // Handle multiple lines within paragraph
+                const linesInBlock = block.split('\n');
+                if (linesInBlock.length > 1) {
+                    block = linesInBlock.join('<br>');
+                }
+                
+                return `<p>${block}</p>`;
+            }).join('\n');
+            
+            // Restore code blocks
+            codeBlocks.forEach(({ id, language, highlightedLang, content }) => {
+                const escapedContent = content
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
+                
+                // Check if this looks like terminal output
+                const isTerminalOutput = content.includes('┌──') || 
+                                         content.includes('└─$') || 
+                                         content.includes('>nmap') ||
+                                         content.includes('C:\\') ||
+                                         content.includes('Starting Nmap');
+                
+                const terminalClass = isTerminalOutput ? 'terminal-output' : '';
+                const displayLanguage = isTerminalOutput ? 'terminal' : language;
+                
+                const codeBlock = `
+                    <div class="code-block ${terminalClass}">
+                        <div class="code-header">
+                            <span class="code-language">${displayLanguage}</span>
+                            <button class="copy-button" data-code="${id}">Copy</button>
+                        </div>
+                        <pre><code class="language-${highlightedLang} ${terminalClass}" id="${id}">${escapedContent}</code></pre>
+                    </div>
+                `;
+                
+                html = html.replace(`{{CODE_BLOCK:${id}}}`, codeBlock);
+            });
+            
+            // Clean up any remaining markers
+            html = html.replace(/\{\{CODE_BLOCK:[^}]+\}\}/g, '');
+            
+            // Clean up multiple line breaks
+            html = html.replace(/\n{3,}/g, '\n\n');
+            
+            return html;
+        }
+
+        // Apply terminal styling to specific elements
+        function applyTerminalStyling() {
+            document.querySelectorAll('pre code').forEach(codeElement => {
+                const content = codeElement.textContent;
+                
+                // Check for terminal-like content
+                if (content.includes('┌──') || 
+                    content.includes('└─$') || 
+                    content.includes('>nmap') ||
+                    content.includes('C:\\') ||
+                    content.includes('Starting Nmap') ||
+                    content.includes('Nmap scan report')) {
+                    
+                    // Add terminal class
+                    codeElement.classList.add('terminal-output');
+                    
+                    // Find the parent code block
+                    const codeBlock = codeElement.closest('.code-block');
+                    if (codeBlock) {
+                        codeBlock.classList.add('terminal-output');
+                        
+                        // Update the language label
+                        const langLabel = codeBlock.querySelector('.code-language');
+                        if (langLabel) {
+                            langLabel.textContent = 'terminal';
+                        }
+                    }
+                }
+            });
+        }
+
+        // Setup copy buttons for code blocks
+        function setupCopyButtons() {
+            document.querySelectorAll('.copy-button').forEach(button => {
+                button.addEventListener('click', async function() {
+                    const codeId = this.getAttribute('data-code');
+                    const codeElement = document.getElementById(codeId);
+                    
+                    if (!codeElement) return;
+                    
+                    const code = codeElement.textContent;
+                    
+                    try {
+                        await navigator.clipboard.writeText(code);
+                        const originalText = this.textContent;
+                        this.textContent = 'Copied!';
+                        this.classList.add('copied');
+                        
+                        setTimeout(() => {
+                            this.textContent = originalText;
+                            this.classList.remove('copied');
+                        }, 2000);
+                    } catch (err) {
+                        console.error('Failed to copy: ', err);
+                        this.textContent = 'Failed!';
+                        
+                        setTimeout(() => {
+                            this.textContent = 'Copy';
+                        }, 2000);
+                    }
+                });
+            });
+        }
+
+        // Update progress
+        function updateProgress() {
+            const total = Object.keys(folderStructure).length;
+            const viewed = viewedDays.length;
+            const percentage = Math.round((viewed / total) * 100);
+
+            document.getElementById('progressText').textContent = `${viewed}/${total} Days (${percentage}%)`;
+            document.getElementById('progressFill').style.width = `${percentage}%`;
+        }
+
+        // Setup search with debounce
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            let searchTimeout;
+            
+            searchInput.addEventListener('input', (e) => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    renderDaysList(e.target.value);
+                }, 300);
+            });
+            
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    renderDaysList(e.target.value);
+                }
+            });
+            
+            // Focus search on Ctrl+K
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                    e.preventDefault();
+                    searchInput.focus();
+                }
+            });
+        }
+
+        // Expose functions globally for onclick handlers
+        window.selectFile = selectFile;
+        window.selectDay = selectDay;
+    </script>
+</body>
+</html>
