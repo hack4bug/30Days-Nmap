@@ -1,12 +1,20 @@
-# 30 Days of Nmap - Master Network Security & Ethical Hacking | Hack4Bug
+<h1 align="center">
+  30 Days of Nmap – Master Network Security & Ethical Hacking | Hack4Bug <img src="https://avatars.githubusercontent.com/u/233085547?v=4" alt="Hack4Bug Logo" width="20">
 
-![Nmap Logo](https://nmap.org/images/sitelogo.png)
-<br>
+  <img src="https://avatars.githubusercontent.com/u/233085547?v=4" alt="Hack4Bug Logo" width="55">
+</h1>
 
-![GitHub stars](https://img.shields.io/github/stars/hack4bug/30Days-Nmap?style=social)
-![GitHub forks](https://img.shields.io/github/forks/hack4bug/30Days-Nmap?style=social)
-![GitHub issues](https://img.shields.io/github/issues/hack4bug/30Days-Nmap)
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
+<p align="center">
+  <img src="https://nmap.org/images/sitelogo.png" alt="Nmap Logo" width="120">
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/github/stars/hack4bug/30Days-Nmap?style=social" alt="GitHub Stars">
+  <img src="https://img.shields.io/github/forks/hack4bug/30Days-Nmap?style=social" alt="GitHub Forks">
+  <img src="https://img.shields.io/github/issues/hack4bug/30Days-Nmap" alt="GitHub Issues">
+  <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License">
+</p>
+
 
 ## Overview
 
