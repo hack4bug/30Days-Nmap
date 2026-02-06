@@ -13,7 +13,45 @@
 **30 Days of Nmap** is a comprehensive, hands-on learning journey designed to take you from absolute beginner to network security expert using Nmap - the world's most powerful network scanner. This structured 30-day curriculum covers everything from basic port scanning to advanced evasion techniques, making it perfect for cybersecurity enthusiasts, ethical hackers, network administrators, and penetration testers. 
 
 ## What You'll Learn
+```cmd
+Hack4Bug-Academy/
+│
+├── Day01-Introduction-to-Nmap/
+├── Day02-Nmap-Installation-and-Setup/
+├── Day03-Understanding-Ports-and-Protocols/
+├── Day04-Basic-Host-Discovery/
+├── Day05-Basic-Port-Scanning/
+├── Day06-TCP-Scan-Techniques-SYN-and-Connect/
+├── Day07-UDP-Scanning/
+├── Day08-Service-and-Version-Detection/
+├── Day09-OS-Fingerprinting/
+├── Day10-Timing-and-Performance-Options/
+│
+├── Day11-Nmap-Scripting-Engine-Basics/
+├── Day12-NSE-Discovery-Scripts/
+├── Day13-NSE-Vulnerability-Scripts/
+├── Day14-Bruteforce-and-Authentication-Scripts/
+├── Day15-Custom-NSE-Scripts-Overview/
+│
+├── Day16-Output-Formats-and-Reporting/
+├── Day17-Grepable-and-XML-Parsing/
+├── Day18-Nmap-Automation-with-Shell-Scripts/
+├── Day19-Multiple-Targets-and-IP-Ranges/
+├── Day20-Stealth-and-Evasion-Techniques/
+│
+├── Day21-Firewall-and-IDS-Evasion/
+├── Day22-Spoofing-and-Decoy-Scanning/
+├── Day23-Fragmentation-and-Packet-Manipulation/
+├── Day24-Web-Server-Scanning-with-Nmap/
+├── Day25-Database-and-SMB-Enumeration/
+│
+├── Day26-Cloud-and-External-Perimeter-Scanning/
+├── Day27-Internal-Network-Enumeration/
+├── Day28-Real-World-Reconnaissance-Methodology/
+├── Day29-Full-Nmap-Recon-Workflow/
+└── Day30-Final-Practical-Challenge/
 
+```
 ### **Core Nmap Fundamentals (Days 1-10)**
 - **Network Discovery & Scanning**: Master host discovery, port scanning techniques, and service enumeration
 - **Protocol Expertise**: Deep dive into TCP, UDP, and various network protocols
